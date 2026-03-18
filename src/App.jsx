@@ -1,8 +1,8 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 
 export default function App() {
   const [orderId, setOrderId] = useState("ORD-24198");
-  const [customerName, setCustomerName] = useState("Tayo Adeyemi");
+  const [customerName, setCustomerName] = useState("Alex Morgan");
   const [productType, setProductType] = useState("Fashion");
   const [issueType, setIssueType] = useState("Defective item");
   const [videoName, setVideoName] = useState("");
@@ -10,6 +10,13 @@ export default function App() {
   const [loading, setLoading] = useState(false);
   const [step, setStep] = useState(1);
   const [currentCheckIndex, setCurrentCheckIndex] = useState(0);
+  const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
+
+  useEffect(() => {
+    const handleResize = () => setIsMobile(window.innerWidth <= 768);
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
 
   const analysisChecks = [
     "🔍 Scanning video frames...",
@@ -130,27 +137,60 @@ export default function App() {
     setStep(1);
     setCurrentCheckIndex(0);
     setOrderId("ORD-24198");
-    setCustomerName("Tayo Adeyemi");
+    setCustomerName("Alex Morgan");
     setProductType("Fashion");
     setIssueType("Defective item");
   };
 
   return (
-    <div style={styles.page}>
+    <div style={{ ...styles.page, padding: isMobile ? "20px 12px" : "32px 20px" }}>
       <div style={styles.shell}>
-        <div style={styles.header}>
+        <div
+          style={{
+            ...styles.header,
+            flexDirection: isMobile ? "column" : "row",
+            alignItems: isMobile ? "stretch" : "flex-start"
+          }}
+        >
           <div>
             <div style={styles.badge}>Prototype Demo</div>
-            <h1 style={styles.title}>Returns Quality Control API</h1>
-            <p style={styles.subtitle}>
+            <h1
+              style={{
+                ...styles.title,
+                fontSize: isMobile ? "28px" : "38px"
+              }}
+            >
+              Returns Quality Control API
+            </h1>
+            <p
+              style={{
+                ...styles.subtitle,
+                fontSize: isMobile ? "14px" : "16px"
+              }}
+            >
               Pre-return video verification for e-commerce brands to reduce
               fraud before refunds are approved.
             </p>
           </div>
-          <div style={styles.logoBox}>RQ</div>
+          <div
+            style={{
+              ...styles.logoBox,
+              width: isMobile ? "52px" : "64px",
+              height: isMobile ? "52px" : "64px",
+              fontSize: isMobile ? "18px" : "22px",
+              alignSelf: isMobile ? "flex-start" : "auto"
+            }}
+          >
+            RQ
+          </div>
         </div>
 
-        <div style={styles.stepRow}>
+        <div
+          style={{
+            ...styles.stepRow,
+            gridTemplateColumns: isMobile ? "1fr" : "repeat(auto-fit, minmax(180px, 1fr))"
+          }}
+        >
           {["Return Started", "Evidence Analysed", "Decision Generated"].map(
             (label, i) => (
               <div
@@ -167,15 +207,33 @@ export default function App() {
           )}
         </div>
 
-        <div style={styles.mainGrid}>
+        <div
+          style={{
+            ...styles.mainGrid,
+            gridTemplateColumns: isMobile ? "1fr" : "1.2fr 0.8fr"
+          }}
+        >
           <div style={styles.leftColumn}>
-            <div style={styles.card}>
-              <div style={styles.cardHeader}>
+            <div style={{ ...styles.card, padding: isMobile ? "18px" : "22px" }}>
+              <div
+                style={{
+                  ...styles.cardHeader,
+                  flexDirection: isMobile ? "column" : "row",
+                  alignItems: isMobile ? "flex-start" : "center"
+                }}
+              >
                 <h2 style={styles.cardTitleDark}>Return submission</h2>
                 <span style={styles.pill}>Customer-facing flow</span>
               </div>
 
-              <div style={styles.formGrid}>
+              <div
+                style={{
+                  ...styles.formGrid,
+                  gridTemplateColumns: isMobile
+                    ? "1fr"
+                    : "repeat(auto-fit, minmax(220px, 1fr))"
+                }}
+              >
                 <div>
                   <label style={styles.label}>Order ID</label>
                   <input
@@ -245,17 +303,31 @@ export default function App() {
                     Tap to choose a video file for inspection
                   </div>
                   {videoName && (
-                    <div style={styles.fileTag}>Selected: {videoName}</div>
+                    <div
+                      style={{
+                        ...styles.fileTag,
+                        maxWidth: "100%",
+                        overflowWrap: "anywhere"
+                      }}
+                    >
+                      Selected: {videoName}
+                    </div>
                   )}
                 </label>
               </div>
 
-              <div style={styles.buttonRow}>
+              <div
+                style={{
+                  ...styles.buttonRow,
+                  flexDirection: isMobile ? "column" : "row"
+                }}
+              >
                 <button
                   onClick={runAnalysis}
                   disabled={!videoName || loading}
                   style={{
                     ...styles.primaryButton,
+                    width: isMobile ? "100%" : "auto",
                     opacity: !videoName || loading ? 0.5 : 1,
                     cursor: !videoName || loading ? "not-allowed" : "pointer"
                   }}
@@ -263,7 +335,13 @@ export default function App() {
                   {loading ? "Analysing return..." : "Run verification"}
                 </button>
 
-                <button onClick={resetDemo} style={styles.secondaryButton}>
+                <button
+                  onClick={resetDemo}
+                  style={{
+                    ...styles.secondaryButton,
+                    width: isMobile ? "100%" : "auto"
+                  }}
+                >
                   Reset demo
                 </button>
               </div>
@@ -288,7 +366,7 @@ export default function App() {
           </div>
 
           <div style={styles.rightColumn}>
-            <div style={styles.card}>
+            <div style={{ ...styles.card, padding: isMobile ? "18px" : "22px" }}>
               <h2 style={styles.cardTitleDark}>Decision panel</h2>
               {!decision && !loading && (
                 <div style={styles.emptyState}>
@@ -334,9 +412,14 @@ export default function App() {
               )}
             </div>
 
-            <div style={styles.card}>
+            <div style={{ ...styles.card, padding: isMobile ? "18px" : "22px" }}>
               <h2 style={styles.cardTitleDark}>Ops dashboard snapshot</h2>
-              <div style={styles.metricsGrid}>
+              <div
+                style={{
+                  ...styles.metricsGrid,
+                  gridTemplateColumns: isMobile ? "1fr 1fr" : "repeat(2, 1fr)"
+                }}
+              >
                 <div style={styles.metricCard}>
                   <div style={styles.metricLabel}>Fraud flagged</div>
                   <div style={styles.metricValue}>17%</div>
@@ -374,7 +457,6 @@ const styles = {
   page: {
     minHeight: "100vh",
     background: "#f3f4f6",
-    padding: "32px 20px",
     fontFamily:
       'Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif',
     color: "#111827"
@@ -386,7 +468,6 @@ const styles = {
   header: {
     display: "flex",
     justifyContent: "space-between",
-    alignItems: "flex-start",
     gap: "16px",
     marginBottom: "24px",
     flexWrap: "wrap"
@@ -402,7 +483,6 @@ const styles = {
     color: "#111827"
   },
   title: {
-    fontSize: "38px",
     lineHeight: 1.1,
     margin: 0,
     color: "#111827"
@@ -411,24 +491,19 @@ const styles = {
     marginTop: "12px",
     maxWidth: "760px",
     color: "#4b5563",
-    fontSize: "16px",
     lineHeight: 1.6
   },
   logoBox: {
-    width: "64px",
-    height: "64px",
     borderRadius: "18px",
     background: "#111827",
     color: "white",
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
-    fontWeight: 700,
-    fontSize: "22px"
+    fontWeight: 700
   },
   stepRow: {
     display: "grid",
-    gridTemplateColumns: "repeat(auto-fit, minmax(180px, 1fr))",
     gap: "12px",
     marginBottom: "20px"
   },
@@ -453,7 +528,6 @@ const styles = {
   },
   mainGrid: {
     display: "grid",
-    gridTemplateColumns: "1.2fr 0.8fr",
     gap: "20px"
   },
   leftColumn: {
@@ -468,7 +542,6 @@ const styles = {
   card: {
     background: "white",
     borderRadius: "20px",
-    padding: "22px",
     boxShadow: "0 10px 25px rgba(0,0,0,0.06)",
     border: "1px solid #e5e7eb"
   },
@@ -476,7 +549,6 @@ const styles = {
     display: "flex",
     justifyContent: "space-between",
     gap: "12px",
-    alignItems: "center",
     marginBottom: "18px",
     flexWrap: "wrap"
   },
@@ -496,7 +568,6 @@ const styles = {
   },
   formGrid: {
     display: "grid",
-    gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))",
     gap: "14px",
     marginBottom: "18px"
   },
@@ -544,7 +615,7 @@ const styles = {
     border: "2px dashed #cbd5e1",
     borderRadius: "18px",
     background: "#ffffff",
-    padding: "32px 18px",
+    padding: "24px 16px",
     textAlign: "center",
     cursor: "pointer"
   },
@@ -570,8 +641,7 @@ const styles = {
   },
   buttonRow: {
     display: "flex",
-    gap: "12px",
-    flexWrap: "wrap"
+    gap: "12px"
   },
   primaryButton: {
     padding: "12px 18px",
@@ -666,14 +736,14 @@ const styles = {
   },
   metricsGrid: {
     display: "grid",
-    gridTemplateColumns: "repeat(2, 1fr)",
     gap: "12px"
   },
   metricCard: {
     border: "1px solid #e5e7eb",
     background: "#f9fafb",
     borderRadius: "16px",
-    padding: "16px"
+    padding: "16px",
+    minWidth: 0
   },
   metricLabel: {
     fontSize: "12px",
